@@ -1,5 +1,8 @@
-import 'package:aathan_login/pages/login_page.dart';
+import 'package:aathan_login/data/expense_data.dart';
+import 'package:aathan_login/models/expense_item.dart';
+import 'package:aathan_login/pages/home_page.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 void main() {
   runApp(const MyApp());
@@ -11,13 +14,12 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
+    return ChangeNotifierProvider(
+      create: (context) => ExpenseData(),
+      builder: (context, child) => const MaterialApp(
+        debugShowCheckedModeBanner: false,
+        home: HomePage(),
       ),
-      home: const LogingPage(),
     );
   }
 }

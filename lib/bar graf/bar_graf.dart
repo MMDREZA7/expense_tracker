@@ -47,31 +47,32 @@ class MyBarGraf extends StatelessWidget {
         borderData: FlBorderData(
           show: false,
         ),
-        titlesData: const FlTitlesData(
+        titlesData: FlTitlesData(
           show: true,
           topTitles: AxisTitles(
             sideTitles: SideTitles(
-              showTitles: false,
+              showTitles: true,
+              getTitlesWidget: getTopTitles,
             ),
           ),
-          leftTitles: AxisTitles(
+          leftTitles: const AxisTitles(
             sideTitles: SideTitles(
               showTitles: false,
             ),
           ),
-          rightTitles: AxisTitles(
+          rightTitles: const AxisTitles(
             sideTitles: SideTitles(
               showTitles: false,
             ),
           ),
-          bottomTitles: AxisTitles(
+          bottomTitles: const AxisTitles(
             sideTitles: SideTitles(
               showTitles: true,
               getTitlesWidget: getBottomTitles,
             ),
           ),
         ),
-        maxY: maxY,
+        maxY: 100, //maxY,
         minY: 0,
         barGroups: myBarData.barData
             .map(
@@ -84,16 +85,56 @@ class MyBarGraf extends StatelessWidget {
                     borderRadius: BorderRadius.circular(4),
                     backDrawRodData: BackgroundBarChartRodData(
                       show: true,
-                      toY: maxY,
+                      toY: 100,
                       color: Colors.grey[200],
                     ),
-                    toY: data.y,
+                    toY: (data.y / maxY!) * 100,
                   ),
                 ],
               ),
             )
             .toList(),
       ),
+    );
+  }
+
+  Widget getTopTitles(double value, TitleMeta meta) {
+    const style = TextStyle(
+      fontSize: 14,
+      fontWeight: FontWeight.bold,
+      color: Colors.grey,
+    );
+
+    Widget text;
+    switch (value.toInt()) {
+      case 0:
+        text = Text(sunAmount.toString(), style: style);
+        break;
+      case 1:
+        text = Text(monAmount.toString(), style: style);
+        break;
+      case 2:
+        text = Text(tueAmount.toString(), style: style);
+        break;
+      case 3:
+        text = Text(wedAmount.toString(), style: style);
+        break;
+      case 4:
+        text = Text(thurAmount.toString(), style: style);
+        break;
+      case 5:
+        text = Text(friAmount.toString(), style: style);
+        break;
+      case 6:
+        text = Text(satAmount.toString(), style: style);
+        break;
+      default:
+        text = const Text('', style: style);
+        break;
+    }
+    return SideTitleWidget(
+      axisSide: meta.axisSide,
+      child: text,
     );
   }
 }

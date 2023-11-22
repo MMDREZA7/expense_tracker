@@ -99,12 +99,12 @@ class _HomePageState extends State<HomePage> {
     Provider.of<ExpenseData>(context, listen: false).deleteExpense(expense);
   }
 
+  int counter = 0;
   // saveNewExpenseButton
   void save() {
     // only svae expense if all text fields ore filled
     if (newExpenseCentsController.text.isNotEmpty &&
-        newExpenseDollarController.text.isNotEmpty &&
-        newExpenseCentsController.text.isNotEmpty) {
+        newExpenseDollarController.text.isNotEmpty) {
       // put dollars and cents together
       String amount =
           '${newExpenseDollarController.text}.${newExpenseCentsController.text}';
@@ -114,6 +114,7 @@ class _HomePageState extends State<HomePage> {
         dateTime: DateTime.now(),
         name: newExpenseNameController.text,
       );
+
       // add the new expense
       Provider.of<ExpenseData>(context, listen: false)
           .addNewExpense(newExpense);

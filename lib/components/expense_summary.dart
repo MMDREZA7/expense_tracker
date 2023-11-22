@@ -39,7 +39,7 @@ class ExpenseSummary extends StatelessWidget {
     values.sort();
     // get largest amount ( which is at the end of the sorted list )
     // and increase the cap slightly so the graph looks almost full
-    max = values.last * 1.1;
+    max = values.last;
 
     return max == 0 ? 100 : max;
   }
@@ -107,7 +107,17 @@ class ExpenseSummary extends StatelessWidget {
                   ),
                 ),
                 Text(
-                    '\$${calculateWeekTotal(value, sunday, monday, tuesday, wednesday, thursday, friday, saturday)}'),
+                  '\$${calculateWeekTotal(
+                    value,
+                    sunday,
+                    monday,
+                    tuesday,
+                    wednesday,
+                    thursday,
+                    friday,
+                    saturday,
+                  )}',
+                ),
               ],
             ),
           ),

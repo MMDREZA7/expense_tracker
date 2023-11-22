@@ -26,8 +26,8 @@ class ExpenseData extends ChangeNotifier {
   void addNewExpense(ExpenseItem newExpense) {
     overallExpenseList.add(newExpense);
 
-    notifyListeners();
     db.saveData(overallExpenseList);
+    notifyListeners();
   }
 
   // delete expense
@@ -114,21 +114,21 @@ class ExpenseData extends ChangeNotifier {
    */
 
   Map<String, double> calculateDailyExpenseSummary() {
-    Map<String, double> daileExpenseSummary = {
+    Map<String, double> dailyExpenseSummary = {
       // date (yyyymmdd) : amountTotalForDay
     };
     for (var expense in overallExpenseList) {
       String date = convertDateTimeToString(expense.dateTime);
       double amount = double.parse(expense.amount);
 
-      if (daileExpenseSummary.containsKey(date)) {
-        double currentAmount = daileExpenseSummary[date]!;
+      if (dailyExpenseSummary.containsKey(date)) {
+        double currentAmount = dailyExpenseSummary[date]!;
         currentAmount += amount;
-        daileExpenseSummary[date] = currentAmount;
+        dailyExpenseSummary[date] = currentAmount;
       } else {
-        daileExpenseSummary.addAll({date: amount});
+        dailyExpenseSummary.addAll({date: amount});
       }
     }
-    return daileExpenseSummary;
+    return dailyExpenseSummary;
   }
 }

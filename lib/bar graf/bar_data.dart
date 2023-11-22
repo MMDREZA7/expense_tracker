@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:aathan_login/bar%20graf/individual_bar.dart';
 
 class BarData {

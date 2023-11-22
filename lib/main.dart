@@ -1,10 +1,16 @@
 import 'package:aathan_login/data/expense_data.dart';
-import 'package:aathan_login/models/expense_item.dart';
 import 'package:aathan_login/pages/home_page.dart';
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/adapters.dart';
 import 'package:provider/provider.dart';
 
-void main() {
+void main() async {
+  // initialize hive
+  await Hive.initFlutter();
+
+  // opne hive box
+  await Hive.openBox("expense_database");
+
   runApp(const MyApp());
 }
 

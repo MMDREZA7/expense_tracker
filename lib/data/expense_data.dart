@@ -1,3 +1,4 @@
+import 'package:aathan_login/data/hive_database.dart';
 import 'package:aathan_login/datetime/date_time_helper.dart';
 import 'package:flutter/material.dart';
 
@@ -12,11 +13,21 @@ class ExpenseData extends ChangeNotifier {
     return overallExpenseList;
   }
 
+  // prepare data for display
+  final db = HiveDataBase();
+  void prepareData() {
+    // if there exists data, get it
+    if (db.readData().isNotEmpty) {
+      overallExpenseList = db.readData();
+    }
+  }
+
   // add new expense
   void addNewExpense(ExpenseItem newExpense) {
     overallExpenseList.add(newExpense);
 
     notifyListeners();
+    db.saveData(overallExpenseList);
   }
 
   // delete expense
@@ -61,7 +72,7 @@ class ExpenseData extends ChangeNotifier {
         startOfWeek = today.subtract(const Duration(days: 1));
       }
     }
-    return startOfWeek!;
+    return startOfWeek ?? DateTime.now();
   }
 
   /* 

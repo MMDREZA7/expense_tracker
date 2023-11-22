@@ -15,7 +15,16 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   // text controllers
   final newExpenseNameController = TextEditingController();
-  final newExpenseAmountController = TextEditingController();
+  final newExpenseDollarController = TextEditingController();
+  final newExpenseCentsController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+
+    // prepare data on startup
+    Provider.of<ExpenseData>(context, listen: false).prepareData();
+  }
 
   // add new expence
   void addNewExpense() {
@@ -28,13 +37,44 @@ class _HomePageState extends State<HomePage> {
           children: [
             // expense name
             TextField(
+              decoration: const InputDecoration(
+                hintText: "Expense name",
+                hintStyle: TextStyle(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
               controller: newExpenseNameController,
             ),
 
-            // expense amount
-            TextField(
-              controller: newExpenseAmountController,
-            ),
+            Row(
+              children: [
+                // expense amount
+                Expanded(
+                  child: TextField(
+                    keyboardType: TextInputType.phone,
+                    decoration: const InputDecoration(
+                      hintText: 'Dollers',
+                      hintStyle: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    controller: newExpenseDollarController,
+                  ),
+                ), // expense amount
+                Expanded(
+                  child: TextField(
+                    keyboardType: TextInputType.phone,
+                    decoration: const InputDecoration(
+                      hintText: 'Cent',
+                      hintStyle: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    controller: newExpenseCentsController,
+                  ),
+                ),
+              ],
+            )
           ],
         ),
         actions: [
@@ -54,17 +94,30 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  // delete expense
+  void deleteExpense(ExpenseItem expense) {
+    Provider.of<ExpenseData>(context, listen: false).deleteExpense(expense);
+  }
+
   // saveNewExpenseButton
   void save() {
-    // create expense item
-    ExpenseItem newExpense = ExpenseItem(
-      amount: newExpenseAmountController.text,
-      dateTime: DateTime.now(),
-      name: newExpenseNameController.text,
-    );
-    // add the new expense
-    Provider.of<ExpenseData>(context, listen: false).addNewExpense(newExpense);
-
+    // only svae expense if all text fields ore filled
+    if (newExpenseCentsController.text.isNotEmpty &&
+        newExpenseDollarController.text.isNotEmpty &&
+        newExpenseCentsController.text.isNotEmpty) {
+      // put dollars and cents together
+      String amount =
+          '${newExpenseDollarController.text}.${newExpenseCentsController.text}';
+      // create expense item
+      ExpenseItem newExpense = ExpenseItem(
+        amount: amount,
+        dateTime: DateTime.now(),
+        name: newExpenseNameController.text,
+      );
+      // add the new expense
+      Provider.of<ExpenseData>(context, listen: false)
+          .addNewExpense(newExpense);
+    }
     Navigator.pop(context);
     clear();
   }
@@ -78,7 +131,8 @@ class _HomePageState extends State<HomePage> {
   // clear controllers
   void clear() {
     newExpenseNameController.clear();
-    newExpenseAmountController.clear();
+    newExpenseDollarController.clear();
+    newExpenseCentsController.clear();
   }
 
   @override
@@ -88,6 +142,7 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: Colors.grey[300],
         floatingActionButton: FloatingActionButton(
           onPressed: addNewExpense,
+          backgroundColor: Colors.black,
           child: const Icon(Icons.add),
         ),
         body: ListView(
@@ -95,15 +150,19 @@ class _HomePageState extends State<HomePage> {
             // weekly summary
             ExpenseSummary(startOfWeek: value.startOfWeekDate()),
 
+            const SizedBox(height: 20),
+
             // expense list
             ListView.builder(
               shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
+              physics: const NeverScrollableScrollPhysics(),
               itemCount: value.getAllExpenseList().length,
               itemBuilder: (context, index) => ExpenseTile(
+                name: value.getAllExpenseList()[index].name,
                 amount: '\$${value.getAllExpenseList()[index].amount}',
                 dateTime: value.getAllExpenseList()[index].dateTime,
-                name: value.getAllExpenseList()[index].name,
+                deleteTapped: (p0) =>
+                    deleteExpense(value.getAllExpenseList()[index]),
               ),
             ),
           ],
